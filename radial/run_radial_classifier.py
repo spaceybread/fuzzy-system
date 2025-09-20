@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 import sys
 
 def get_data(npz_file): return np.load(npz_file, allow_pickle=True).item()
@@ -35,7 +36,7 @@ def run_bin_search(data, alpha):
 def run_sweep(data, save_path): 
     res_ma = {"coeff": [], "TMR": [], "FMR": []}
 
-    for i in range(5, 101, 5):
+    for i in tqdm(range(5, 101, 5)):
         resdb, idx = run_bin_search(data, i / 100)
 
         res_ma["coeff"].append(idx)

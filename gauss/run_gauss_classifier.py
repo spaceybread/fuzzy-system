@@ -20,7 +20,7 @@ def recov(helper, vec, scale):
 def match(c_vec, q_vec, scale):
     helper, a = gen(c_vec, scale)
     b = recov(helper, q_vec, scale)
-    return list(a) == list(b)
+    return np.array_equal(a, b)
 
 def run_bin_search(data, alpha): 
     hi, lo = 4, 0

@@ -34,10 +34,10 @@ def run_bin_search(data, alpha):
         
         coeff = (hi + lo) / 2
 
-        for key in keys:
+        for key in keys: 
             rad = data[key][1] * coeff
             cen = data[key][0]
-        
+
             tchk += sum([1 if match(cen, val, rad) else 0 for val in data[key][2]])
             tks += len(data[key][2])
             fchk += sum([1 if match(cen, val, rad) else 0 for val in data[key][3]])

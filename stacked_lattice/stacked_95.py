@@ -18,23 +18,46 @@ def recov(helper, vec, scale):
     return round_scaled(helper + vec, scale)
 
 def match(c_vec, q_vec, scale):
+    OFFSET = scale / 2
+        
     helper, a = gen(c_vec, scale)
     b = recov(helper, q_vec, scale)
-    return np.array_equal(a, b)
+    
+    if np.array_equal(a, b): return True
+    
+    potentials = []
+    
+    for i in range(len(c_vec)):
+        up = np.copy(c_vec)
+        do = np.copy(c_vec)
+        
+        up[i] += OFFSET
+        do[i] -= OFFSET
+        potentials += [up, do]
+    
+    n_scale = scale * 0.95
+    for x in potentials:
+        helper, a = gen(x, n_scale)
+        b = recov(helper, q_vec, n_scale)
+    
+        if np.array_equal(a, b): return True
+    
+    return False
+    
 
 def run_bin_search(data, alpha): 
-    hi, lo = 4, 0
+    hi, lo = 1, 0
 
     keys = list(data.keys())
     res = {}
 
-    for _ in tqdm(range(16)): 
+    for _ in tqdm(range(20)): 
         tchk, fchk = 0, 0
         tks, fks = 0, 0
         
         coeff = (hi + lo) / 2
 
-        for key in keys: 
+        for key in tqdm(keys):
             rad = data[key][1] * coeff
             cen = data[key][0]
 
@@ -54,7 +77,7 @@ def run_bin_search(data, alpha):
 def run_sweep(data, save_path): 
     res_ma = {"coeff": [], "TMR": [], "FMR": []}
 
-    for i in tqdm(range(5, 101, 5)):
+    for i in range(70, 101, 40):
         resdb, idx = run_bin_search(data, i / 100)
         
         res_ma["coeff"].append(idx)

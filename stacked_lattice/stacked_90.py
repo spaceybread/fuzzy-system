@@ -35,7 +35,7 @@ def match(c_vec, q_vec, scale):
         do[i] -= OFFSET
         potentials += [up, do]
     
-    n_scale = scale
+    n_scale = scale * 0.9
     for x in potentials:
         helper, a = gen(x, n_scale)
         b = recov(helper, q_vec, n_scale)

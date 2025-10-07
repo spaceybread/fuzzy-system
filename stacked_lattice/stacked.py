@@ -35,7 +35,7 @@ def match(c_vec, q_vec, scale):
         do[i] -= OFFSET
         potentials += [up, do]
     
-    n_scale = scale / 1.25
+    n_scale = scale * 0.95
     for x in potentials:
         helper, a = gen(x, n_scale)
         b = recov(helper, q_vec, n_scale)
@@ -46,12 +46,12 @@ def match(c_vec, q_vec, scale):
     
 
 def run_bin_search(data, alpha): 
-    hi, lo = 4, 0
+    hi, lo = 1, 0
 
     keys = list(data.keys())
     res = {}
 
-    for _ in tqdm(range(16)): 
+    for _ in tqdm(range(20)): 
         tchk, fchk = 0, 0
         tks, fks = 0, 0
         

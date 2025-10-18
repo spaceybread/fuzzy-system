@@ -24,7 +24,7 @@ def match(c_vec, q_vec, scale):
     OFFSET = scale / 2
     n = len(c_vec)
     n0_scale = scale * 0.95
-    n1_scale = scale * 0.80
+    n1_scale = scale * 0.93
 
     # Precompute randoms
     rand_base = np.random.uniform(0, 100, n)

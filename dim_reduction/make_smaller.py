@@ -21,31 +21,35 @@ def load_data(npz_file, text_file, save_path, idx, T, R, new_dim):
     
     # for each key in grp, grp[k] contains
     # about 18 or so vectors
+    
+    # print(grp)
 
     all_vecs = np.vstack([np.array(vs) for vs in grp.values()])
-
+    
     pca = PCA(n_components=new_dim)
     pca.fit(all_vecs)
 
     reduced_grp = {}
     for k, vecs in grp.items():
         vecs = np.array(vecs)
-        reduced_grp[k] = pca.transform(vecs)
+        reduced_grp[k] = list(pca.transform(vecs))
 
-    np.save(save_path, reduced_grp)
+    np.save(save_path, reduced_grp, allow_pickle=True)
 
 
 def make_datasets(npz_file, save_path_rad, save_path_lat, T, R):
     data = np.load(npz_file, allow_pickle=True).item()
     all_keys = list(data.keys())
-    
+    #print(len(all_keys))
+
     ma, mb = {}, {}
 
     for x in data.keys():
-        try: booga_boo = random.sample(data[x], k = T + R)
-        except:
-            print(len(data[x]), R, T)
-            continue
+        #try: 
+        booga_boo = random.sample(data[x], k = T + R)
+        #except:
+        #    print(len(data[x]), R, T)
+        #    continue
         
         registration_vecs = booga_boo[:R]
         intra_vecs = booga_boo[R:]

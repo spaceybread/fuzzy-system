@@ -13,4 +13,5 @@ radial_data = data_dir + "radial_ds.npy"
 lat_data = data_dir + "lat_ds.npy"
 
 make_smaller.load_data(npz_file, text_file, mapped_data, 2, T, R, 128)
+
 make_smaller.make_datasets(mapped_data, radial_data, lat_data, T, R)

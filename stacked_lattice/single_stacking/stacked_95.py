@@ -77,7 +77,7 @@ def run_bin_search(data, alpha):
 def run_sweep(data, save_path): 
     res_ma = {"coeff": [], "TMR": [], "FMR": []}
 
-    for i in range(70, 101, 40):
+    for i in range(90, 101, 40):
         resdb, idx = run_bin_search(data, i / 100)
         
         res_ma["coeff"].append(idx)

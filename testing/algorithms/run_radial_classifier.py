@@ -25,7 +25,7 @@ def run_bin_search(data, coeff):
     return tmr, fmr
 
 def run_sweep(data, save_path):
-    COEFF = 1.1415042281150818
+    COEFF = 0.9525095522403717
     
     res_ma = {"coeff": [], "TMR": [], "FMR": []}
 

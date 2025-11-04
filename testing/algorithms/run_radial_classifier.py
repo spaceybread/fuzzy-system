@@ -6,41 +6,34 @@ import sys
 def get_data(npz_file): return np.load(npz_file, allow_pickle=True).item()
 
 def run_bin_search(data, coeff): 
-    hi, lo = 2, 0
 
     keys = list(data.keys())
 
-    for _ in range(64): 
-        tchk, fchk = 0, 0
-        tks, fks = 0, 0
+
+    tchk, fchk = 0, 0
+    tks, fks = 0, 0
         
-        coeff = (hi + lo) / 2
-
-        for key in keys: 
-            rad = data[key][0] * coeff
+    for key in keys:
+        rad = data[key][0] * coeff
             
-            tchk += sum([1 if val < rad else 0 for val in data[key][1]])
-            tks += len(data[key][1])
-            fchk += sum([1 if val < rad else 0 for val in data[key][2]])
-            fks += len(data[key][2])
+        tchk += sum([1 if val < rad else 0 for val in data[key][1]])
+        tks += len(data[key][1])
+        fchk += sum([1 if val < rad else 0 for val in data[key][2]])
+        fks += len(data[key][2])
 
-        tmr, fmr = tchk / tks, fchk / fks
-        res[coeff] = [tmr, fmr]
+    tmr, fmr = tchk / tks, fchk / fks
+    return tmr, fmr
 
-        if tmr > alpha: hi = coeff
-        else: lo = coeff
-
-    return res, coeff
-
-def run_sweep(data, save_path): 
+def run_sweep(data, save_path):
+    COEFF = 1.1415042281150818
+    
     res_ma = {"coeff": [], "TMR": [], "FMR": []}
 
-    for i in tqdm(range(5, 101, 5)):
-        resdb, idx = run_bin_search(data, i / 100)
+    tmr, fmr = run_bin_search(data, COEFF)
 
-        res_ma["coeff"].append(idx)
-        res_ma["TMR"].append(resdb[idx][0])
-        res_ma["FMR"].append(resdb[idx][1])
+    res_ma["coeff"].append(COEFF)
+    res_ma["TMR"].append(tmr)
+    res_ma["FMR"].append(fmr)
     
     print("Done! Check:", save_path)
     pd.DataFrame.from_dict(res_ma, orient='columns').to_csv(save_path, index=False)

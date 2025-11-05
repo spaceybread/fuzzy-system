@@ -65,8 +65,7 @@ def run_bin_search(data, coeff):
     
     return tmr, fmr
 
-def run_sweep(data, save_path):
-    COEFF = 0.6262750625610352
+def run_sweep(data, save_path, COEFF):
     
     res_ma = {"coeff": [], "TMR": [], "FMR": []}
 
@@ -82,8 +81,9 @@ def run_sweep(data, save_path):
 def main(): 
     src_file = sys.argv[1]
     dst_file = sys.argv[2]
+    coeff = float(sys.argv[3])
 
     data = get_data(src_file)
-    run_sweep(data, dst_file)
+    run_sweep(data, dst_file, coeff)
 
 main()

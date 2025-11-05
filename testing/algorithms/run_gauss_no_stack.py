@@ -42,8 +42,7 @@ def run_bin_search(data, coeff):
     tmr, fmr = tchk / tks, fchk / fks
     return tmr, fmr
 
-def run_sweep(data, save_path): 
-    COEFF = 0.70721435546875
+def run_sweep(data, save_path, COEFF):
     
     res_ma = {"coeff": [], "TMR": [], "FMR": []}
 
@@ -56,11 +55,12 @@ def run_sweep(data, save_path):
     print("Done! Check:", save_path)
     pd.DataFrame.from_dict(res_ma, orient='columns').to_csv(save_path, index=False)
 
-def main(): 
+def main():
     src_file = sys.argv[1]
     dst_file = sys.argv[2]
+    coeff = float(sys.argv[3])
 
     data = get_data(src_file)
-    run_sweep(data, dst_file)
-
+    run_sweep(data, dst_file, coeff)
+    
 main()

@@ -1,0 +1,3 @@
+Split complete:
+  Training set: 736 samples
+  Testing set:  184 samples

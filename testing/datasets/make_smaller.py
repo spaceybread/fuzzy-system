@@ -3,8 +3,9 @@ from collections import defaultdict
 import numpy as np
 import random
 
-def load_data(npz_file, text_file, save_path, idx, Tl, Tu, R, new_dim): 
+def load_data(npz_file, text_file, save_path, idx, T, R, new_dim):
     npz = np.load(npz_file)
+    npz = np.squeeze(npz)
     ids = [x.strip().split('/')[-idx] for x in open(text_file)]
 
     if (len(ids) != npz.shape[0]): print("Size Mismatch")
@@ -15,18 +16,17 @@ def load_data(npz_file, text_file, save_path, idx, Tl, Tu, R, new_dim):
     rem = []
 
     for k in grp.keys(): 
-        if len(grp[k]) < Tl + R: rem.append(k)
-        if len(grp[k]) > Tu + R: rem.append(k)
-
+        if len(grp[k]) < T + R: rem.append(k)
+        
     for r in rem: grp.pop(r)
     
     # for each key in grp, grp[k] contains
     # about 18 or so vectors
     
     # print(grp)
-
-    all_vecs = np.vstack([np.array(vs) for vs in grp.values()])
     
+    all_vecs = np.vstack([np.array(vs) for vs in grp.values()])
+    print(all_vecs.shape)
     pca = PCA(n_components=new_dim)
     pca.fit(all_vecs)
 
@@ -73,4 +73,38 @@ def make_datasets(npz_file, save_path_rad, save_path_lat, T, R):
 
     np.save(save_path_rad, ma)
     np.save(save_path_lat, mb)
+    
+
+def split_datasets(rad_file, lat_file, save_train_rad, save_test_rad, save_train_lat, save_test_lat, test_ratio=0.2, seed=314):
+
+    np.random.seed(seed)
+
+    rad_data = np.load(rad_file, allow_pickle=True).item()
+    lat_data = np.load(lat_file, allow_pickle=True).item()
+
+    common_keys = list(set(rad_data.keys()) & set(lat_data.keys()))
+    if len(common_keys) == 0:
+        print("No overlapping keys between radius and latent data files.")
+        return
+
+    np.random.shuffle(common_keys)
+    split_idx = int(len(common_keys) * (1 - test_ratio))
+    train_keys = common_keys[:split_idx]
+    test_keys = common_keys[split_idx:]
+
+    train_rad = {k: rad_data[k] for k in train_keys}
+    test_rad = {k: rad_data[k] for k in test_keys}
+
+    train_lat = {k: lat_data[k] for k in train_keys}
+    test_lat = {k: lat_data[k] for k in test_keys}
+
+    np.save(save_train_rad, train_rad)
+    np.save(save_test_rad, test_rad)
+    np.save(save_train_lat, train_lat)
+    np.save(save_test_lat, test_lat)
+
+    print(f"Split complete:")
+    print(f"  Training set: {len(train_keys)} samples")
+    print(f"  Testing set:  {len(test_keys)} samples")
+
     
